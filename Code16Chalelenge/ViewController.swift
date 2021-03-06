@@ -15,7 +15,7 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // We will use `viewDidAppear(_:)` method instead of `viewDidLoad()` because when view did appear its frame is set to the final size (view is added to the window, and layed out), in `viewDidLoad()` the frame has its value loaded from the storyboard/xib and is not set to the real device frame yet.
+        // We will use `viewDidAppear(_:)` method instead of `viewDidLoad()` because when view did appear its frame is set to the final size (view is added to the window, and layed out), in `viewDidLoad()` the frame has its value loaded from the storyboard/xib and is not set to the real device frame yet. Putting the code here will help us to avoid wrong frame calculations and strange layout look for example in the Xcode Preview of the view controller.
 
         //loadSnake()
         // or
