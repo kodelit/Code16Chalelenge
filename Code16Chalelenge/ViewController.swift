@@ -11,26 +11,31 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // We will use `viewDidAppear(_:)` method instead of `viewDidLoad()` because when view did appear its frame is set to the final size (view is added to the window, and layed out), in `viewDidLoad()` the frame has its value loaded from the storyboard/xib and is not set to the real device frame yet.
+
         //loadSnake()
         // or
-        
-var dc=0;let wid=25,dxy=[0:(1,0),3:(-1,0),1:(0,-1),2:(0,1)],m=[-1:[1,3,0,2],1:[2,0,3,1]],
-vw=view.bounds.size.width,vh=view.bounds.size.height,ds=Int(vw/CGFloat(wid)),
-hid=Int((vh-140.0)/CGFloat(ds)),fw=CGFloat(ds*wid),fv=UIView(frame:CGRect(x:(vw-fw)/2,y:40,width:fw,height:CGFloat(ds*hid))),
-cd:(CGPoint?)->UIView={let v=UIView(frame:CGRect(origin:$0 ?? .zero,size:CGSize(width:ds,height:ds)));
-v.backgroundColor = .green;v.layer.borderWidth=1;return v},isc:(UIView,Int,Int)->Bool={$1==Int($0.frame.minX)/ds&&$2==Int($0.frame.minY)/ds},
-st:()->Void={[weak vi=view,weak fv]in vi?.backgroundColor = .white;fv?.subviews.forEach({$0.removeFromSuperview()});var sn=[UIView](),dts=[UIView](),
-d=2,cx=0,cy=0;dc=0;let rd:()->UIView={var x,y:Int;repeat{x=Int.random(in:0..<wid);y=Int.random(in:0..<hid)}
-while (sn+dts).first(where:{isc($0,x,y)}) != nil;dts.insert(cd(CGPoint(x:x*ds,y:y*ds)),at:0);return dts[0]};
-[0,1,2].forEach{sn.append(cd(.zero));fv?.addSubview(sn[$0])};fv?.addSubview(rd());Timer.scheduledTimer(withTimeInterval:0.3,repeats:true){
-d=m[dc]?[d] ?? d;dc=0;if let mv=dxy[d]{cx=cx+mv.0;cy=cy+mv.1;if cx>=0,cx<wid,cy>=0,cy<hid,sn.first(where:{isc($0,cx,cy)})==nil{
-if let l=sn.popLast(){if l.superview != nil{if let ei=dts.firstIndex(where:{isc($0,cx,cy)}){sn.insert(dts[ei],at:0)
-dts.remove(at:ei);fv?.addSubview(rd())};l.frame.origin=CGPoint(x:cx*ds,y:cy*ds);sn.insert(l,at:0)}else{$0.invalidate()}}}else{$0.invalidate();vi?.backgroundColor = .black}}}},
-r=UIButton(type:.contactAdd,primaryAction:.init(handler:{_ in st()}));fv.layer.borderWidth=1;view.addSubview(fv)
-r.frame=CGRect(x:view.frame.midX-50,y:vh-120,width:100,height:100);r.setImage(UIImage(systemName:"repeat"),for:.normal)
-view.addSubview(r);[-1,1].forEach{v in let b=UIButton(type:.system,primaryAction:.init(handler:{_ in dc=v}))
-b.setImage(UIImage(systemName:"arrowshape.turn.up.\(v==1 ?"right":"left").fill"),for:.normal);b.frame=CGRect(x:v==1 ?vw-120:20,y:vh-120,width:100,height:100);view.addSubview(b)};st()
 
+        var dc=0;let wid=25,dxy=[0:(1,0),3:(-1,0),1:(0,-1),2:(0,1)],m=[-1:[1,3,0,2],1:[2,0,3,1]],
+        vw=view.bounds.size.width,vh=view.bounds.size.height,ds=Int(vw/CGFloat(wid)),
+        hid=Int((vh-140.0)/CGFloat(ds)),fw=CGFloat(ds*wid),fv=UIView(frame:CGRect(x:(vw-fw)/2,y:40,width:fw,height:CGFloat(ds*hid))),
+        cd:(CGPoint?)->UIView={let v=UIView(frame:CGRect(origin:$0 ?? .zero,size:CGSize(width:ds,height:ds)));
+        v.backgroundColor = .green;v.layer.borderWidth=1;return v},isc:(UIView,Int,Int)->Bool={$1==Int($0.frame.minX)/ds&&$2==Int($0.frame.minY)/ds},
+        st:()->Void={[weak vi=view,weak fv]in vi?.backgroundColor = .white;fv?.subviews.forEach({$0.removeFromSuperview()});var sn=[UIView](),dts=[UIView](),
+        d=2,cx=0,cy=0;dc=0;let rd:()->UIView={var x,y:Int;repeat{x=Int.random(in:0..<wid);y=Int.random(in:0..<hid)}
+        while (sn+dts).first(where:{isc($0,x,y)}) != nil;dts.insert(cd(CGPoint(x:x*ds,y:y*ds)),at:0);return dts[0]};
+        [0,1,2].forEach{sn.append(cd(.zero));fv?.addSubview(sn[$0])};fv?.addSubview(rd());Timer.scheduledTimer(withTimeInterval:0.3,repeats:true){
+        d=m[dc]?[d] ?? d;dc=0;if let mv=dxy[d]{cx=cx+mv.0;cy=cy+mv.1;if cx>=0,cx<wid,cy>=0,cy<hid,sn.first(where:{isc($0,cx,cy)})==nil{
+        if let l=sn.popLast(){if l.superview != nil{if let ei=dts.firstIndex(where:{isc($0,cx,cy)}){sn.insert(dts[ei],at:0)
+        dts.remove(at:ei);fv?.addSubview(rd())};l.frame.origin=CGPoint(x:cx*ds,y:cy*ds);sn.insert(l,at:0)}else{$0.invalidate()}}}else{$0.invalidate();vi?.backgroundColor = .black}}}},
+        r=UIButton(type:.contactAdd,primaryAction:.init(handler:{_ in st()}));fv.layer.borderWidth=1;view.addSubview(fv)
+        r.frame=CGRect(x:view.frame.midX-50,y:vh-120,width:100,height:100);r.setImage(UIImage(systemName:"repeat"),for:.normal)
+        view.addSubview(r);[-1,1].forEach{v in let b=UIButton(type:.system,primaryAction:.init(handler:{_ in dc=v}))
+        b.setImage(UIImage(systemName:"arrowshape.turn.up.\(v==1 ?"right":"left").fill"),for:.normal);b.frame=CGRect(x:v==1 ?vw-120:20,y:vh-120,width:100,height:100);view.addSubview(b)};st()
     }
 
     /// Loads the Snake game logic and starts the game.
@@ -131,4 +136,31 @@ b.setImage(UIImage(systemName:"arrowshape.turn.up.\(v==1 ?"right":"left").fill")
         st()
     }
 }
+
+// MARK: - Xcode Preview
+// Works from Xcode 11 and macOS 10.15
+
+#if canImport(SwiftUI) && DEBUG
+import SwiftUI
+
+@available(iOS 13.0, tvOS 13.0, *)
+struct ViewControllerRepresentable: UIViewControllerRepresentable {
+    typealias UIViewControllerType = ViewController
+
+    func makeUIViewController(context: Context) -> ViewController {
+        // let bundle = Bundle(for: StartViewController.self)
+        // let storyboard = UIStoryboard(name: "Main", bundle: bundle)
+        // return storyboard.instantiateViewController(identifier: "ViewController")
+        return ViewController(nibName: nil, bundle: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: ViewController, context: Context) {}
+}
+
+@available(iOS 13.0, tvOS 13.0, *)
+struct UIKitViewControllerProvider: PreviewProvider {
+    static var previews: ViewControllerRepresentable { ViewControllerRepresentable() }
+}
+
+#endif
 
