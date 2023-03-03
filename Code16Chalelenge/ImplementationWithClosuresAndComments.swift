@@ -20,13 +20,8 @@ func loadDocumentedDemoCode(in view: UIView) {
 
     // Bedziemy mieli dwa układy współrzędnych:
     // - pierwszy to układ współrzędnych widoku `view`, w którym będziemy układali kazdy element (komórki węża i losowa komórka na planszy do "zjedzenia")
-
-    // Dla czytelności nazwiemy sobie ten typ `ViewPoint` (punkt w widoku, we współrzędnych widoku), ktory będzie niczym innym jak domyślny iOS typ punktu czyli `CGPoint`:
-
-    /// Punkt na siatce planszy.
-    ///
-    /// Posiada współrzędne rzeczywiste (w programowaniu nazywamy je zmiennoprzecinkowymi, ang. `floating point`, w skrócie `float`, w przypadku współrzędnych, rozmaru, ramki widoku mamy zawsze przedrostek `CG` czyli np. `CGPoint`, `CGRect`, `CGFloat`).
-    typealias ViewPoint = CGPoint // CGPoint(x: CGFloat, y: CGFloat)
+    //  Punkt we współrzędnych widoku będzie typu `CGPoint`
+    //  Posiada on współrzędne rzeczywiste (w programowaniu nazywamy je zmiennoprzecinkowymi, ang. `floating point`, w skrócie `float`. Pnieważ operujemy w obrębie biblioteki UIKit, która jest jedną z bibliotek do tworzenia tzw UI czyli interfejsu użytkownika w przypadku współrzędnych, rozmaru, ramki widoku mamy zawsze przedrostek `CG` czyli np. `CGPoint`, `CGRect`, `CGFloat`. Jest tak ponieważ włąśnei takich typów używa UIKit, mimo że w Swift jest oczywiście typ `Float`. To jest jeden z niuansów platformy. Nie bedziemy teraz wnikać dlaczego tak jest.
 
     // - drugi to układ współrzędnych na siatce planszy, po której będzie poruszał się wąż, jeden punkt na siatce to jedna komórka (1 element węża)
 
@@ -40,7 +35,7 @@ func loadDocumentedDemoCode(in view: UIView) {
         var row: Int = 0
     }
 
-    // Zdefiniujemy sobie też od razu dwa typy które pomogą nam określić kierunek i zmianę kierunku, w ktorym porusza sie wąż.
+    // Zdefiniujemy sobie też od razu dwa typy, które pomogą nam przechować wartość określającą kierunek i zmianę kierunku, w ktorym porusza sie wąż. Bedą to tzw typy wyliczeniowe (ang. `Enum`) i charakteryzują się tym, że mają najczęściej z góry określoną liczbę wartości jakie może przyjąć stała/zmienna tego typu. Te wartości nazywaja się przypadkami (ang. `case`).
 
     /// Zmiana kierunku ruchu węża.
     enum DirectionChange {
@@ -139,7 +134,7 @@ func loadDocumentedDemoCode(in view: UIView) {
     /// Funkcja tworzaca nową komórkę siatki w podanym punkcie siatki badź w punkcie zerowym (piwerszye pole siatki w lewym gornym rogu).
     ///
     /// - parameter point: Punkt w którym powinna się pojawić kropka, określony jako współrzędne w granicach widoku. Można pominąć parametr `point` co spowoduje utworzenie kropki  punkcie (0,0) (lewy górny róg widoku)
-    let createCellAt: (_ point: ViewPoint) -> UIView
+    let createCellAt: (_ point: CGPoint) -> UIView
 
     // Powyżej mamy definicję takiej zmiennej przechowującej referencję do funkcji (a w zasadzie w Swift to będzie stała `let` a nie zmienna `var` ponieważ jej wartość przypisujemy tylko raz, a potem jej już nigdy nie zmieniamy).
     // Poniżej przypiszemy sobie do tej zmiennej wartość, która będzie naszą funkcją. Rozdzielimy to tylko raz, dla zobrazowania, kolejne tego typu zmienne/stałe będziemy już przypisywali w jednym wierszu.
@@ -186,7 +181,7 @@ func loadDocumentedDemoCode(in view: UIView) {
     /// Funkcja sprawdzająca czy dana komórka (widok) znajduje się na danej pozycji na siatce czy nie.
     let isCell: (_ cell: UIView, _ position: GridPoint) -> Bool = { cell, position in
         /// Pozycja x comórki w widoku planszy. Rzutujemy ją na wartość całkowitą `Int` (ang. integer), żeby uniknąć błędów zaokrąglenia, tym bardziej, ze będziemy obliczali pozycję na siatce, która jest wartością całkowitą.
-        let viewPosition: ViewPoint = cell.frame.origin
+        let viewPosition: CGPoint = cell.frame.origin
         var gridPosition = GridPoint()
         gridPosition.column = Int( viewPosition.x/CGFloat(columnWidth) )
         gridPosition.row = Int( viewPosition.y/CGFloat(rowHeight) )
@@ -229,7 +224,7 @@ func loadDocumentedDemoCode(in view: UIView) {
             // żeby to wykonać napiszemy sobie póki co pustą funkcję sprawdzającą, którą dokończymy za chwilę
         } while !isGridPositionAvailable(gridPosition)
 
-        let viewPosition = ViewPoint(x: CGFloat(gridPosition.column * columnWidth), y: CGFloat(gridPosition.row * rowHeight))
+        let viewPosition = CGPoint(x: CGFloat(gridPosition.column * columnWidth), y: CGFloat(gridPosition.row * rowHeight))
         let cell = createCellAt(viewPosition)
         return cell
     }
@@ -287,7 +282,7 @@ func loadDocumentedDemoCode(in view: UIView) {
         // przywróc kolor tła pola
         boardView?.backgroundColor = .white
 
-        // usuń poprzednie elementy gry (węża, losową kropkę, pogląd siatki jeśli był załadowany)
+        // usuń poprzednie elementy gry (węża, losową kropkę, pogląd siatki jeśli był załadowany, generalnie wszystkie podwidoki planszy)
         boardView?.subviews.forEach { subview in
             subview.removeFromSuperview()
         }
@@ -295,7 +290,7 @@ func loadDocumentedDemoCode(in view: UIView) {
         let willSnakeBiteHimselfAt: (_ position: GridPoint) -> Bool = { position in
             // Przypominam, że przesuwając węża prznosimy ostatni jego element na początek.
 
-            // Bierzemy więc węża ale bez ostatniego elementu ogona, ponieważ bedzie on teraz stanowił głowę, jednak nie wiemy jeszcze gdzie i czy możemy tą głowę umieścić w nowym miejscu, co właśnie sprawdzimy. Głowa może zostać umieszczona tam gdzie dopiero co był koniec ogona.
+            // Bierzemy więc węża ale bez ostatniego elementu ogona, ponieważ bedzie on za moment stanowił głowę, jednak nie wiemy jeszcze gdzie i czy możemy tą głowę umieścić w nowym miejscu, co właśnie sprawdzimy. Głowa może zostać również umieszczona tam gdzie dopiero co był koniec ogona, dlatego włąsnie ten koniec ogona usuniemy przed sprawdzeniem.
             let snakeWithoutHead = snake.dropLast()
 
             // poszukaj pierwszej która
@@ -366,7 +361,7 @@ func loadDocumentedDemoCode(in view: UIView) {
                         }
 
                         // Określmy rzeczywiste położenie widoku głowy w widoku planszy
-                        let headPosition = ViewPoint(x: currentHeadPosition.column * columnWidth, y: currentHeadPosition.row * rowHeight)
+                        let headPosition = CGPoint(x: currentHeadPosition.column * columnWidth, y: currentHeadPosition.row * rowHeight)
                         // przemieśćmy nową głowę węża w nowe położenie
                         newHead.frame.origin = headPosition
                         // umieśćmy głowę na poczatku węża
@@ -401,7 +396,7 @@ func loadDocumentedDemoCode(in view: UIView) {
     })
     // stwórzmy przycisk do resetowania gry
     let button = UIButton(type: .system, primaryAction: resetButtonAction)
-    let buttonPosition = ViewPoint(x: (viewWidth - buttonWidth)/2, // środek ekranu
+    let buttonPosition = CGPoint(x: (viewWidth - buttonWidth)/2, // środek ekranu
                                    y: viewHeight - bottomMargin - buttonHeight)
 
     // ustawienie pozycji i wymiarów przycisku na ekranie
@@ -434,7 +429,7 @@ func loadDocumentedDemoCode(in view: UIView) {
             button.setImage(UIImage(systemName: "arrowshape.turn.up.right"), for: .normal)
         }
 
-        let buttonPosition = ViewPoint(x: buttonX, y: buttonY)
+        let buttonPosition = CGPoint(x: buttonX, y: buttonY)
         button.frame = CGRect(origin: buttonPosition, size: buttonSize)
         view.addSubview(button)
 

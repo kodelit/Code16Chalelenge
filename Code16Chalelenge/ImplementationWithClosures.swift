@@ -15,9 +15,6 @@ import UIKit
 /// - bez dokumentacji
 func loadDemoCode(in view: UIView) {
     /// Punkt na siatce planszy.
-    typealias ViewPoint = CGPoint
-
-    /// Punkt na siatce planszy.
     struct GridPoint {
         var column: Int = 0
         var row: Int = 0
@@ -68,7 +65,7 @@ func loadDemoCode(in view: UIView) {
     // MARK: - Tworzenie komórki siatki na planszy (Komórek węża i losowej komórki)
 
     /// Funkcja tworzaca nową komórkę siatki w podanym punkcie siatki badź w punkcie zerowym (piwerszye pole siatki w lewym gornym rogu).
-    let createCellAt: (_ point: ViewPoint) -> UIView
+    let createCellAt: (_ point: CGPoint) -> UIView
 
     createCellAt = { point in
         let cell = UIView(frame: CGRect(origin: point, size: CGSize(width: columnWidth, height: rowHeight)))
@@ -104,7 +101,7 @@ func loadDemoCode(in view: UIView) {
     /// Funkcja sprawdzająca czy dana komórka (widok) znajduje się na danej pozycji na siatce czy nie.
     let isCell: (_ cell: UIView, _ position: GridPoint) -> Bool = { cell, position in
         /// Pozycja x comórki w widoku planszy. Rzutujemy ją na wartość całkowitą `Int` (ang. integer), żeby uniknąć błędów zaokrąglenia, tym bardziej, ze będziemy obliczali pozycję na siatce, która jest wartością całkowitą.
-        let viewPosition: ViewPoint = cell.frame.origin
+        let viewPosition: CGPoint = cell.frame.origin
         var gridPosition = GridPoint()
         gridPosition.column = Int( viewPosition.x/CGFloat(columnWidth) )
         gridPosition.row = Int( viewPosition.y/CGFloat(rowHeight) )
@@ -132,7 +129,7 @@ func loadDemoCode(in view: UIView) {
             gridPosition.row = Int.random(in: 0...(numberOfRows-1))
         } while !isGridPositionAvailable(gridPosition)
 
-        let viewPosition = ViewPoint(x: CGFloat(gridPosition.column * columnWidth), y: CGFloat(gridPosition.row * rowHeight))
+        let viewPosition = CGPoint(x: CGFloat(gridPosition.column * columnWidth), y: CGFloat(gridPosition.row * rowHeight))
         let cell = createCellAt(viewPosition)
         return cell
     }
@@ -219,7 +216,7 @@ func loadDemoCode(in view: UIView) {
                             food = newFood
                         }
 
-                        let headPosition = ViewPoint(x: currentHeadPosition.column * columnWidth, y: currentHeadPosition.row * rowHeight)
+                        let headPosition = CGPoint(x: currentHeadPosition.column * columnWidth, y: currentHeadPosition.row * rowHeight)
                         newHead.frame.origin = headPosition
                         snake.insert(newHead, at: 0)
                     } else {
@@ -248,7 +245,7 @@ func loadDemoCode(in view: UIView) {
         start()
     })
     let button = UIButton(type: .system, primaryAction: resetButtonAction)
-    let buttonPosition = ViewPoint(x: (viewWidth - buttonWidth)/2, // środek ekranu
+    let buttonPosition = CGPoint(x: (viewWidth - buttonWidth)/2, // środek ekranu
                                    y: viewHeight - bottomMargin - buttonHeight)
     button.frame = CGRect(origin: buttonPosition, size: buttonSize)
     button.setImage(UIImage(systemName: "repeat"), for: .normal)
@@ -272,7 +269,7 @@ func loadDemoCode(in view: UIView) {
             button.setImage(UIImage(systemName: "arrowshape.turn.up.right"), for: .normal)
         }
 
-        let buttonPosition = ViewPoint(x: buttonX, y: buttonY)
+        let buttonPosition = CGPoint(x: buttonX, y: buttonY)
         button.frame = CGRect(origin: buttonPosition, size: buttonSize)
         view.addSubview(button)
         //button.layer.borderWidth = 1
